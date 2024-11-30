@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+    <link href="/static/styles.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style></style>
+</head>
+<body>
+    <div class="hero-image">
+    <div class="note-grid">
+
+    {% for i in range(lenght) %}
+
+            <div class="note-card" id="noteCard">
+            <textarea disabled >{{ notes[i].title }}</textarea>
+
+            <div id="buttonglobal">
+                <form action="/note/delete" method="post" class="deleteGlobal">
+                    <input type="hidden" name="deleteId" value={{notes[i].id}}>
+                    <button type="submit" >Delete</button>
+                </form>
+                <space></space>
+                <form action="/notes" method="post" class="showGlobal">
+                    <input type="hidden" name="noteIndex" value={{i}}>
+                    <button type="submit" >Show</button>
+                </form>
+
+            </div>
+            </div>
+
+    {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

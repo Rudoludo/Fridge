@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add note</title>
+    <link href="/static/styles.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% if lenght == 0 %}
+    <h2>No note left : Create a new note! </h2>
+    {% endif %}
+
+    <form action="/addnote" method="post">
+        <div id="wrapper" >
+
+            <div id="container">
+                <img src="/static/post.png">
+                <textarea id="noteInput" maxlength="30" name="new_note" cols="40" rows="4" id="txt"
+            ></textarea>
+            </div>
+
+        </div>
+
+        <div id="buttoncontainer" style = " display: flex;">
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <space></space>
+        <a href="/">
+            <button type="button" >Back</button>
+        </a>
+        </div>
+    </form>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link href="/static/styles.css" rel="stylesheet">
+</head>
+<body>
+
+
+
+    <br>
+
+    <button id="markButton" >Set Completed! </button>
+
+    {% if error == "8" %}
+    <div class="note-card" id="error">
+        <textarea disabled >LIMIT REACHED, Complete some tasks</textarea>
+        <button onclick="document.getElementById('error').style.display='none'">OK</button>
+    </div>
+    {% endif %}
+
+
+        <div id="wrapper" >
+
+            <button id="backButton" class="navbutton" style="height: fit-content;position: relative; top: 200px;">Back</button>
+            <div id="container">
+                <img src="/static/post.png">
+
+
+            </div>
+            <button id="nextButton" class="navbutton" style="height: fit-content;position: relative; top: 200px;">Next</button>
+        </div>
+
+            <div id="buttoncontainer" >
+                <div id="deleteButton"></div>
+<!--                 <space></space> -->
+                <form action="{{ url_for('addnote')}}" method="get">
+                    <button type="submit">New Note</button>
+                </form>
+<!--                 <space></space> -->
+
+                <form action="{{ url_for('global_view') }}" method="get">
+                    <button type="submit">Global view</button>
+                </form>
+            </div>
+
+
+
+
+    <script>
+        /* getting the data from Flask */
+        const dataFromFlask = {{ data | tojson }};
+
+        /* getting the index values of a specific notes , if accessed from the global view, otherwise defaults to 0 */
+        let currentIndex = parseInt('{{ index | default(0)}}');
+
+/*         sanitize any incorrect index passed from flask */
+        if (currentIndex < 0){
+            currentIndex=0;
+        }
+        if (currentIndex > dataFromFlask.length - 1) {
+            /* currentIndex = dataFromFrask.length - 1; */
+            currentIndex = 0;
+        }
+
+        const container = document.getElementById('container');
+        const deleteButton = document.getElementById('deleteButton');
+
+        /* Function to display the note */
+        function displayNote(index) {
+            const item = dataFromFlask[index];
+            console.log(item.title)
+
+            container.innerHTML =`
+                <img src="/static/post.png">
+                <img src="/static/completed.png" id="markImage" style="display: none; position: absolute; left: 220px; top: 220px; width: 33%;z-index: 1;" >
+                <div contenteditable="true" style="position: absolute; top: 75px;"> ${item.title}</div>
+                <p id="date" cols="40" rows="1" id="txt" > ${item.date}</p>
+            `;
+
+            deleteButton.innerHTML =`
+                <form action="/note/delete" method="post" style="height: 98%;">
+                    <input type="hidden" name="deleteIdS" value="${item.id}">
+                    <input type="hidden" name="deleteIndex" value="${currentIndex}">
+                    <button type="submit" id="deleteSubmit">Delete</button>
+                </form>
+            `;
+            const markImage = document.getElementById('markImage');
+            const markButton =document.getElementById('markButton');
+            const deleteSubmit =document.getElementById('deleteSubmit');
+
+            markButton.addEventListener('click', () => {
+                markImage.style.display = 'block';
+                setTimeout(function() {
+                    deleteSubmit.click();
+                }, 1000);
+            });
+        }
+
+        /* nextButton script for browsing */
+        document.getElementById('nextButton').addEventListener('click', () => {
+            if (currentIndex === dataFromFlask.length - 1) {
+                currentIndex = 0;
+            } else {
+                currentIndex ++;
+            }
+            displayNote(currentIndex);
+        })
+
+        /* backButton script for browsing */
+        document.getElementById('backButton').addEventListener('click', () => {
+            if (currentIndex === 0 ) {
+                currentIndex = dataFromFlask.length - 1;
+            } else {
+                currentIndex --;
+            }
+            displayNote(currentIndex);
+        })
+
+
+        displayNote(currentIndex);
+
+       /*  setup of the mark completed feature, I have to run this last because java populate most the html (img included) */
+    </script>
+</body>
+</html>
